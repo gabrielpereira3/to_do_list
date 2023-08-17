@@ -1,16 +1,17 @@
 import "./App.css";
 
 function App() {
-  return (
-    <template>
-      <h1>Clean Architecture no front-end</h1>
-      <br />
-      Teste
-      <br />
-      <br />
-      123456
-    </template>
-  );
+  const todos: Array<{ description: string; done: boolean }> = [
+    { description: "Criar os testes de unidade", done: false },
+    { description: "Criar os testes de integração", done: false },
+    { description: "Criar os testes E2E", done: true },
+  ];
+
+  function getTotal() {
+    return todos.length;
+  }
+
+  return <div>{getTotal()}</div>;
 }
 
 export default App;
