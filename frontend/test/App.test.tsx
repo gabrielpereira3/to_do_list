@@ -3,13 +3,23 @@ import React from "react";
 import { describe, expect, test } from "vitest";
 import { render, screen } from "@testing-library/react";
 import App from "../src/App";
+import userEvent from "@testing-library/user-event";
+
+function setup(jsx: React.JSX.Element) {
+  return {
+    user: userEvent.setup(),
+    ...render(jsx),
+  };
+}
 
 describe("App block", function () {
   test("Deve testar a todo list", async function () {
-    render(<App />);
-    expect(screen.getByRole("heading")).toHaveTextContent("Total: 3");
-    expect(screen.getByRole("heading")).toHaveTextContent("Completed: 33%");
-    // expect(getByText("Total: 3")).toBeInTheDocument();
-    // expect(getByText("Completed: 33%")).toBeInTheDocument();
+    const { user } = setup(<App />);
+    const input = screen.getByRole("textbox");
+    user.type(input, "A");
+    const button = screen.getByRole("button");
+    user.click(button);
+    expect(screen.getByText("Total: 1")).toBeDefined();
+    expect(screen.getByText("Completed: 0%")).toBeDefined();
   });
 });
