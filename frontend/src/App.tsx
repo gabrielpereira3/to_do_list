@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 
 type TTodo = {
@@ -10,16 +10,21 @@ type TTodo = {
 function App() {
   const [description, setDescription] = useState("");
   const [todos, setTodos] = useState<TTodo[]>([]);
+  const [completed, setCompleted] = useState(0);
 
   function getTotal() {
     return todos.length;
   }
 
   function getCompleted() {
-    const total = todos.length;
+    const total = getTotal();
     const completed = todos.filter((todo) => todo.done).length;
-    return Math.round((completed / total) * 100);
+    setCompleted(Math.round((completed / total) * 100));
   }
+
+  useEffect(() => {
+    getCompleted();
+  }, [todos.length]);
 
   function addTodo() {
     setTodos((prevTodos) => [
@@ -28,14 +33,25 @@ function App() {
     ]);
   }
 
+  function toggleDone(todo: TTodo) {
+    todo.done = !todo.done;
+    getCompleted();
+  }
+
   return (
     <div>
       <h1 aria-label="total">Total: {getTotal()}</h1>
-      <h2 aria-label="completed">Completed: {getCompleted()}%</h2>
+      <h2 aria-label="completed">Completed: {completed}%</h2>
       {todos.map((todo) => (
-        <div key={todo.id}>
+        <div key={todo.id} aria-label="todo-item">
           <h3 aria-label="todo-description">{todo.description}</h3>
           <h3 aria-label="todo-done">{todo.done.toString()}</h3>
+          <button
+            aria-label="todo-toggle-done-button"
+            onClick={() => toggleDone(todo)}
+          >
+            done/undone
+          </button>
           <br />
         </div>
       ))}

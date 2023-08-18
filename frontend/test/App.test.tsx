@@ -1,7 +1,7 @@
 import "@testing-library/jest-dom";
 import React from "react";
 import { describe, expect, test } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import App from "../src/App";
 import userEvent from "@testing-library/user-event";
 
@@ -14,7 +14,7 @@ function setup(jsx: React.JSX.Element) {
 
 describe("App block", function () {
   test("Deve testar a todo list", async function () {
-    const { user } = setup(<App />);
+    const { user, ...render } = setup(<App />);
     const input = screen.getByLabelText("todo-description-input");
     await user.type(input, "A");
     const button = screen.getByLabelText("add-todo-button");
@@ -28,5 +28,13 @@ describe("App block", function () {
     await user.type(input, "B");
     await user.click(button);
     expect(screen.getByLabelText("total")).toHaveTextContent("Total: 2");
+    const allTodos = await render.findAllByLabelText("todo-item");
+    const toggleButton = await within(allTodos[0]).getByLabelText(
+      "todo-toggle-done-button"
+    );
+    await user.click(toggleButton);
+    expect(screen.getByLabelText("completed")).toHaveTextContent(
+      "Completed: 50%"
+    );
   });
 });
