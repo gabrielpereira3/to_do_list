@@ -15,11 +15,18 @@ function setup(jsx: React.JSX.Element) {
 describe("App block", function () {
   test("Deve testar a todo list", async function () {
     const { user } = setup(<App />);
-    const input = screen.getByRole("textbox");
+    const input = screen.getByLabelText("todo-description-input");
     await user.type(input, "A");
-    const button = screen.getByRole("button");
+    const button = screen.getByLabelText("add-todo-button");
     await user.click(button);
-    expect(screen.getByText("Total: 1")).toBeDefined();
-    expect(screen.getByText("Completed: 0%")).toBeDefined();
+    expect(screen.getByLabelText("total")).toHaveTextContent("Total: 1");
+    expect(screen.getByLabelText("completed")).toHaveTextContent(
+      "Completed: 0%"
+    );
+    expect(screen.getByLabelText("todo-description")).toHaveTextContent("A");
+    expect(screen.getByLabelText("todo-done")).toHaveTextContent("false");
+    await user.type(input, "B");
+    await user.click(button);
+    expect(screen.getByLabelText("total")).toHaveTextContent("Total: 2");
   });
 });

@@ -1,11 +1,15 @@
 import { useState } from "react";
 import "./App.css";
 
+type TTodo = {
+  id: number;
+  description: string;
+  done: boolean;
+};
+
 function App() {
   const [description, setDescription] = useState("");
-  const [todos, setTodos] = useState<{ description: string; done: boolean }[]>(
-    []
-  );
+  const [todos, setTodos] = useState<TTodo[]>([]);
 
   function getTotal() {
     return todos.length;
@@ -18,19 +22,32 @@ function App() {
   }
 
   function addTodo() {
-    setTodos((prevTodos) => [...prevTodos, { description, done: false }]);
+    setTodos((prevTodos) => [
+      ...prevTodos,
+      { id: prevTodos.length + 1, description, done: false },
+    ]);
   }
 
   return (
     <div>
-      <h1>Total: {getTotal()}</h1>
-      <h1>Completed: {getCompleted()}%</h1>
+      <h1 aria-label="total">Total: {getTotal()}</h1>
+      <h2 aria-label="completed">Completed: {getCompleted()}%</h2>
+      {todos.map((todo) => (
+        <div key={todo.id}>
+          <h3 aria-label="todo-description">{todo.description}</h3>
+          <h3 aria-label="todo-done">{todo.done.toString()}</h3>
+          <br />
+        </div>
+      ))}
       <input
+        aria-label="todo-description-input"
         type="text"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
       />
-      <button onClick={() => addTodo()}>Add</button>
+      <button aria-label="add-todo-button" onClick={() => addTodo()}>
+        Add
+      </button>
     </div>
   );
 }
