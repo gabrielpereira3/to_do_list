@@ -15,7 +15,7 @@ function setup(jsx: React.JSX.Element) {
 describe("Todo list", function () {
   test("Deve testar a todo list vazia", async function () {
     render(<App />);
-    expect(screen.getByLabelText("total")).toHaveTextContent("Total: 0");
+    expect(screen.getByLabelText("total")).toHaveTextContent("Total: 1");
     expect(screen.getByLabelText("completed")).toHaveTextContent(
       "Completed: 0%"
     );
@@ -29,7 +29,7 @@ describe("Todo list", function () {
     await user.click(button);
     await user.type(input, "A");
     await user.click(button);
-    expect(screen.getByLabelText("total")).toHaveTextContent("Total: 1");
+    expect(screen.getByLabelText("total")).toHaveTextContent("Total: 2");
     expect(screen.getByLabelText("completed")).toHaveTextContent(
       "Completed: 0%"
     );
@@ -41,7 +41,7 @@ describe("Todo list", function () {
     const button = screen.getByLabelText("add-todo-button");
     await user.type(input, "A");
     await user.click(button);
-    expect(screen.getByLabelText("total")).toHaveTextContent("Total: 1");
+    expect(screen.getByLabelText("total")).toHaveTextContent("Total: 2");
     expect(screen.getByLabelText("completed")).toHaveTextContent(
       "Completed: 0%"
     );
@@ -49,20 +49,20 @@ describe("Todo list", function () {
     expect(screen.getByLabelText("todo-done")).toHaveTextContent("false");
     await user.type(input, "B");
     await user.click(button);
-    expect(screen.getByLabelText("total")).toHaveTextContent("Total: 2");
+    expect(screen.getByLabelText("total")).toHaveTextContent("Total: 3");
     const allTodos = await render.findAllByLabelText("todo-item");
     const toggleButton = await within(allTodos[0]).getByLabelText(
       "todo-toggle-done-button"
     );
     await user.click(toggleButton);
     expect(screen.getByLabelText("completed")).toHaveTextContent(
-      "Completed: 50%"
+      "Completed: 67%"
     );
     const deleteButton = await within(allTodos[0]).getByLabelText(
       "todo-delete-button"
     );
     await user.click(deleteButton);
-    expect(screen.getByLabelText("total")).toHaveTextContent("Total: 1");
+    expect(screen.getByLabelText("total")).toHaveTextContent("Total: 2");
     expect(screen.getByLabelText("completed")).toHaveTextContent(
       "Completed: 0%"
     );

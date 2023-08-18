@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "./App.css";
+import axios from "axios";
 
 type TTodo = {
   id: number;
@@ -12,6 +13,16 @@ function App() {
   const [todos, setTodos] = useState<TTodo[]>([]);
   const [completed, setCompleted] = useState(0);
 
+  useEffect(() => {
+    axios.get("http://localhost:3000/todos").then((response) => {
+      setTodos([...response.data]);
+    });
+  }, []);
+
+  useEffect(() => {
+    getCompleted();
+  }, [todos.length]);
+
   function getTotal() {
     return todos.length;
   }
@@ -22,10 +33,6 @@ function App() {
     const completedList = todos.filter((todo) => todo.done).length;
     setCompleted(Math.round((completedList / total) * 100));
   }
-
-  useEffect(() => {
-    getCompleted();
-  }, [todos.length]);
 
   function clearDescription() {
     setDescription("");
