@@ -36,5 +36,13 @@ describe("App block", function () {
     expect(screen.getByLabelText("completed")).toHaveTextContent(
       "Completed: 50%"
     );
+    const deleteButton = await within(allTodos[0]).getByLabelText(
+      "todo-delete-button"
+    );
+    await user.click(deleteButton);
+    expect(screen.getByLabelText("total")).toHaveTextContent("Total: 1");
+    expect(screen.getByLabelText("completed")).toHaveTextContent(
+      "Completed: 0%"
+    );
   });
 });

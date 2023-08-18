@@ -38,6 +38,12 @@ function App() {
     getCompleted();
   }
 
+  function deleteTodo(todo: TTodo) {
+    setTodos((prevTodos) =>
+      prevTodos.filter((item: TTodo) => item.id !== todo.id)
+    );
+  }
+
   return (
     <div>
       <h1 aria-label="total">Total: {getTotal()}</h1>
@@ -51,6 +57,12 @@ function App() {
             onClick={() => toggleDone(todo)}
           >
             done/undone
+          </button>
+          <button
+            aria-label="todo-delete-button"
+            onClick={() => deleteTodo(todo)}
+          >
+            delete
           </button>
           <br />
         </div>
