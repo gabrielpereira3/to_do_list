@@ -16,9 +16,9 @@ describe("App block", function () {
   test("Deve testar a todo list", async function () {
     const { user } = setup(<App />);
     const input = screen.getByRole("textbox");
-    user.type(input, "A");
+    await user.type(input, "A");
     const button = screen.getByRole("button");
-    user.click(button);
+    await user.click(button);
     expect(screen.getByText("Total: 1")).toBeDefined();
     expect(screen.getByText("Completed: 0%")).toBeDefined();
   });

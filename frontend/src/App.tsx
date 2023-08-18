@@ -3,9 +3,13 @@ import "./App.css";
 
 function App() {
   const [description, setDescription] = useState("");
-  const [todos, setTodos] = useState<[{ description: string; done: boolean }]>(
+  const [todos, setTodos] = useState<{ description: string; done: boolean }[]>(
     []
   );
+
+  function getTotal() {
+    return todos.length;
+  }
 
   function getCompleted() {
     const total = todos.length;
@@ -14,16 +18,12 @@ function App() {
   }
 
   function addTodo() {
-    const array = todos;
-    array.push({ description, done: false });
-    setTodos(array);
-    // setTodos((todos) => {...todos, { description, done: false }})
-    // todos.push({ description, done: false });
+    setTodos((prevTodos) => [...prevTodos, { description, done: false }]);
   }
 
   return (
     <div>
-      <h1>Total: {todos.length}</h1>
+      <h1>Total: {getTotal()}</h1>
       <h1>Completed: {getCompleted()}%</h1>
       <input
         type="text"
