@@ -18,19 +18,26 @@ function App() {
 
   function getCompleted() {
     const total = getTotal();
-    const completed = todos.filter((todo) => todo.done).length;
-    setCompleted(Math.round((completed / total) * 100));
+    if (total === 0) return 0;
+    const completedList = todos.filter((todo) => todo.done).length;
+    setCompleted(Math.round((completedList / total) * 100));
   }
 
   useEffect(() => {
     getCompleted();
   }, [todos.length]);
 
+  function clearDescription() {
+    setDescription("");
+  }
+
   function addTodo() {
+    if (todos.some((todo) => todo.description === description)) return;
     setTodos((prevTodos) => [
       ...prevTodos,
       { id: prevTodos.length + 1, description, done: false },
     ]);
+    clearDescription();
   }
 
   function toggleDone(todo: TTodo) {

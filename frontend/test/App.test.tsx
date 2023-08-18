@@ -12,12 +12,34 @@ function setup(jsx: React.JSX.Element) {
   };
 }
 
-describe("App block", function () {
+describe("Todo list", function () {
+  test("Deve testar a todo list vazia", async function () {
+    render(<App />);
+    expect(screen.getByLabelText("total")).toHaveTextContent("Total: 0");
+    expect(screen.getByLabelText("completed")).toHaveTextContent(
+      "Completed: 0%"
+    );
+  });
+
+  test("Não deve deixar inserir todo duplicado", async function () {
+    const { user } = setup(<App />);
+    const input = screen.getByLabelText("todo-description-input");
+    const button = screen.getByLabelText("add-todo-button");
+    await user.type(input, "A");
+    await user.click(button);
+    await user.type(input, "A");
+    await user.click(button);
+    expect(screen.getByLabelText("total")).toHaveTextContent("Total: 1");
+    expect(screen.getByLabelText("completed")).toHaveTextContent(
+      "Completed: 0%"
+    );
+  });
+
   test("Deve testar a todo list", async function () {
     const { user, ...render } = setup(<App />);
     const input = screen.getByLabelText("todo-description-input");
-    await user.type(input, "A");
     const button = screen.getByLabelText("add-todo-button");
+    await user.type(input, "A");
     await user.click(button);
     expect(screen.getByLabelText("total")).toHaveTextContent("Total: 1");
     expect(screen.getByLabelText("completed")).toHaveTextContent(
