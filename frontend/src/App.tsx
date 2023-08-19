@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import axios from "axios";
+import TodosGatewayHttp from "./infra/gateway/TodosGatewayHttp";
 
 type TTodo = {
   id: number;
@@ -14,8 +14,9 @@ function App() {
   const [completed, setCompleted] = useState(0);
 
   useEffect(() => {
-    axios.get("http://localhost:3000/todos").then((response) => {
-      setTodos([...response.data]);
+    const todosGateway = new TodosGatewayHttp();
+    todosGateway.getTodos().then((todosData) => {
+      setTodos([...todosData]);
     });
   }, []);
 
