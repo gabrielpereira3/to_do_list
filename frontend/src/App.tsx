@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import TodosGatewayHttp from "./infra/gateway/TodosGatewayHttp";
+import useTodos from "./store/todos";
 
 type TTodo = {
   id: number;
@@ -12,9 +12,9 @@ function App() {
   const [description, setDescription] = useState("");
   const [todos, setTodos] = useState<TTodo[]>([]);
   const [completed, setCompleted] = useState(0);
+  const { todosGateway } = useTodos();
 
   useEffect(() => {
-    const todosGateway = new TodosGatewayHttp();
     todosGateway.getTodos().then((todosData) => {
       setTodos([...todosData]);
     });
