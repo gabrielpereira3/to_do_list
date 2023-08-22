@@ -4,6 +4,8 @@ import { describe, expect, test } from "vitest";
 import { render, screen, within } from "@testing-library/react";
 import App from "../src/App";
 import userEvent from "@testing-library/user-event";
+import TodosGateway from "../src/infra/gateway/TodosGateway";
+import { TTodo } from "../src/types/TodoType";
 
 function setup(jsx: React.JSX.Element) {
   return {
@@ -20,9 +22,19 @@ function sleep(time: number) {
   });
 }
 
+function createTodosGateway() {
+  const todos: TTodo[] = [{ id: 1, description: "abcdef", done: false }];
+  const todosGateway: TodosGateway = {
+    async getTodos() {
+      return todos;
+    },
+  };
+  return todosGateway;
+}
+
 describe("Todo list", function () {
   test("Deve testar a todo list vazia", async function () {
-    render(<App />);
+    render(<App todosGateway={createTodosGateway()} />);
     await sleep(100);
     expect(screen.getByLabelText("total")).toHaveTextContent("Total: 1");
     expect(screen.getByLabelText("completed")).toHaveTextContent(
@@ -31,7 +43,7 @@ describe("Todo list", function () {
   });
 
   test("Não deve deixar inserir todo duplicado", async function () {
-    const { user } = setup(<App />);
+    const { user } = setup(<App todosGateway={createTodosGateway()} />);
     await sleep(100);
     const input = screen.getByLabelText("todo-description-input");
     const button = screen.getByLabelText("add-todo-button");
@@ -46,7 +58,9 @@ describe("Todo list", function () {
   });
 
   test("Deve testar a todo list", async function () {
-    const { user, ...render } = setup(<App />);
+    const { user, ...render } = setup(
+      <App todosGateway={createTodosGateway()} />
+    );
     await sleep(100);
     const input = screen.getByLabelText("todo-description-input");
     const button = screen.getByLabelText("add-todo-button");

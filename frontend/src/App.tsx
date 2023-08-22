@@ -1,63 +1,18 @@
-import { useEffect, useState } from "react";
 import "./App.css";
-import useTodos from "./store/todos";
+import useTodoList from "./entity/TodoList";
+import TodosGateway from "./infra/gateway/TodosGateway";
 
-type TTodo = {
-  id: number;
-  description: string;
-  done: boolean;
-};
-
-function App() {
-  const [description, setDescription] = useState("");
-  const [todos, setTodos] = useState<TTodo[]>([]);
-  const [completed, setCompleted] = useState(0);
-  const { todosGateway } = useTodos();
-
-  useEffect(() => {
-    todosGateway.getTodos().then((todosData) => {
-      setTodos([...todosData]);
-    });
-  }, []);
-
-  useEffect(() => {
-    getCompleted();
-  }, [todos.length]);
-
-  function getTotal() {
-    return todos.length;
-  }
-
-  function getCompleted() {
-    const total = getTotal();
-    if (total === 0) return 0;
-    const completedList = todos.filter((todo) => todo.done).length;
-    setCompleted(Math.round((completedList / total) * 100));
-  }
-
-  function clearDescription() {
-    setDescription("");
-  }
-
-  function addTodo() {
-    if (todos.some((todo) => todo.description === description)) return;
-    setTodos((prevTodos) => [
-      ...prevTodos,
-      { id: prevTodos.length + 1, description, done: false },
-    ]);
-    clearDescription();
-  }
-
-  function toggleDone(todo: TTodo) {
-    todo.done = !todo.done;
-    getCompleted();
-  }
-
-  function deleteTodo(todo: TTodo) {
-    setTodos((prevTodos) =>
-      prevTodos.filter((item: TTodo) => item.id !== todo.id)
-    );
-  }
+const App = ({ todosGateway }: { todosGateway: TodosGateway }) => {
+  const {
+    getTotal,
+    addTodo,
+    toggleDone,
+    deleteTodo,
+    completed,
+    todos,
+    description,
+    setDescription,
+  } = useTodoList(todosGateway);
 
   return (
     <div>
@@ -93,6 +48,6 @@ function App() {
       </button>
     </div>
   );
-}
+};
 
 export default App;
