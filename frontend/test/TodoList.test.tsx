@@ -2,7 +2,7 @@ import "@testing-library/jest-dom";
 import React from "react";
 import { describe, expect, test } from "vitest";
 import { render, screen, within } from "@testing-library/react";
-import App from "../src/App";
+import TodoList from "../src/components/TodoList/TodoList";
 import userEvent from "@testing-library/user-event";
 import TodosGateway from "../src/infra/gateway/TodosGateway";
 import { TTodo } from "../src/types/TodoType";
@@ -22,7 +22,7 @@ function sleep(time: number) {
   });
 }
 
-function createTodosGateway() {
+function createTodosGatewayLocal() {
   const todos: TTodo[] = [{ id: 1, description: "abcdef", done: false }];
   const todosGateway: TodosGateway = {
     async getTodos() {
@@ -34,7 +34,7 @@ function createTodosGateway() {
 
 describe("Todo list", function () {
   test("Deve testar a todo list vazia", async function () {
-    render(<App todosGateway={createTodosGateway()} />);
+    render(<TodoList todosGateway={createTodosGatewayLocal()} />);
     await sleep(100);
     expect(screen.getByLabelText("total")).toHaveTextContent("Total: 1");
     expect(screen.getByLabelText("completed")).toHaveTextContent(
@@ -43,8 +43,9 @@ describe("Todo list", function () {
   });
 
   test("Não deve deixar inserir todo duplicado", async function () {
-    const { user } = setup(<App todosGateway={createTodosGateway()} />);
-    await sleep(100);
+    const { user } = setup(
+      <TodoList todosGateway={createTodosGatewayLocal()} />
+    );
     const input = screen.getByLabelText("todo-description-input");
     const button = screen.getByLabelText("add-todo-button");
     await user.type(input, "A");
@@ -59,9 +60,8 @@ describe("Todo list", function () {
 
   test("Deve testar a todo list", async function () {
     const { user, ...render } = setup(
-      <App todosGateway={createTodosGateway()} />
+      <TodoList todosGateway={createTodosGatewayLocal()} />
     );
-    await sleep(100);
     const input = screen.getByLabelText("todo-description-input");
     const button = screen.getByLabelText("add-todo-button");
     await user.type(input, "A");
